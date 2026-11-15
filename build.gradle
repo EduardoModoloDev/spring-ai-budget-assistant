@@ -29,13 +29,20 @@ dependencies {
     implementation 'org.springframework.ai:spring-ai-starter-model-openai'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    // Banco em memória usado no perfil "local" (sem Docker) e nos testes
+    runtimeOnly 'com.h2database:h2'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+    // Os testes usam o perfil "test" (H2 em memória, sem MySQL)
+    systemProperty 'spring.profiles.active', 'test'
 }
