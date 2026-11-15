@@ -2,6 +2,8 @@ package dio.budgeting.infrastructure.http;
 
 import dio.budgeting.application.ListTransactionsByCategoryUseCase;
 import dio.budgeting.application.PersistTransactionUseCase;
+import dio.budgeting.application.SummarizeExpensesByCategoryUseCase;
+import dio.budgeting.application.output.CategorySummaryOutput;
 import dio.budgeting.domain.Category;
 import dio.budgeting.infrastructure.http.request.TransactionRequest;
 import dio.budgeting.infrastructure.http.response.TransactionResponse;
@@ -25,6 +27,7 @@ import java.util.List;
 public class TransactionController {
     private final PersistTransactionUseCase persistTransactionUseCase;
     private final ListTransactionsByCategoryUseCase listTransactionsByCategoryUseCase;
+    private final SummarizeExpensesByCategoryUseCase summarizeExpensesByCategoryUseCase;
 
     private final TranscriptionModel transcriptionModel;
     private final ChatClient chatClient;
@@ -32,16 +35,19 @@ public class TransactionController {
 
     public TransactionController(PersistTransactionUseCase persistTransactionUseCase,
                                  ListTransactionsByCategoryUseCase listTransactionsByCategoryUseCase,
+                                 SummarizeExpensesByCategoryUseCase summarizeExpensesByCategoryUseCase,
                                  TranscriptionModel transcriptionModel,
                                  @Value("classpath:prompts/system-message.st") Resource systemPrompt,
                                  ChatClient.Builder chatClientBuilder,
                                  TextToSpeechModel textToSpeechModel) throws IOException {
         this.persistTransactionUseCase = persistTransactionUseCase;
         this.listTransactionsByCategoryUseCase = listTransactionsByCategoryUseCase;
+        this.summarizeExpensesByCategoryUseCase = summarizeExpensesByCategoryUseCase;
         this.transcriptionModel = transcriptionModel;
         this.chatClient = chatClientBuilder
                 .defaultSystem(systemPrompt.getContentAsString(Charset.defaultCharset()))
-                .defaultTools(persistTransactionUseCase, listTransactionsByCategoryUseCase)
+                .defaultTools(persistTransactionUseCase, listTransactionsByCategoryUseCase,
+                        summarizeExpensesByCategoryUseCase)
                 .build();
         this.textToSpeechModel = textToSpeechModel;
     }
@@ -56,6 +62,11 @@ public class TransactionController {
     @GetMapping("/{category}")
     public List<TransactionResponse> readTransactions(@PathVariable Category category) {
         return listTransactionsByCategoryUseCase.execute(category).stream().map(TransactionResponse::from).toList();
+    }
+
+    @GetMapping("/{category}/summary")
+    public CategorySummaryOutput summarizeExpenses(@PathVariable Category category) {
+        return summarizeExpensesByCategoryUseCase.execute(category);
     }
 
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/mp3")
