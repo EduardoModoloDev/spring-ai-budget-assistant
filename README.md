@@ -5,24 +5,6 @@ API de controle de gastos com **Spring Boot** e **Spring AI**, feita no Desafio 
 
 ## O que o projeto faz
 
-O fluxo principal acontece no endpoint `POST /transactions/ai`:
-
-```
-Áudio (m4a/mp3) ──► Transcrição (Whisper) ──► Texto
-                                              │
-                                              ▼
-                              ChatClient + modelo de IA (gpt-4o-mini)
-                              entende a intenção e escolhe uma ferramenta
-                                              │
-                ┌─────────────────────────────┼──────────────────────────────┐
-                ▼                             ▼                              ▼
-     persist-transaction        list-transactions-by-category    summarize-expenses-by-category
-     (salva um gasto)           (lista gastos da categoria)      (total gasto na categoria) ★ nova
-                └─────────────────────────────┼──────────────────────────────┘
-                                              ▼
-                              Resposta em texto ──► Voz (TTS) ──► audio.mp3
-```
-
 1. O cliente envia um arquivo de áudio.
 2. O `TranscriptionModel` transforma o áudio em texto.
 3. O `ChatClient` manda o texto para a IA junto com a lista de **ferramentas** (métodos Java anotados com `@Tool`).
@@ -63,7 +45,6 @@ Também existem endpoints REST "normais", sem IA, para criar e consultar transa�
 |---|---|
 | `OPENAI_API_KEY` | Chave da OpenAI. **Nunca** coloque a chave no código; o `application.properties` lê `${OPENAI_API_KEY}` |
 
-Veja o modelo em [`.env.example`](.env.example).
 
 ```bash
 # Linux/macOS/Git Bash
