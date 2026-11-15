@@ -2,11 +2,6 @@
 
 API de controle de gastos com **Spring Boot** e **Spring AI**, feita no Desafio de Projeto da DIO. Você manda um **áudio** como "gastei 80 reais no mercado" e a API registra a transação. Você também pode perguntar "quanto gastei no mercado?" e ouvir a resposta.
 
-<!-- Espaço para prints: coloque as imagens em docs/ e descomente as linhas abaixo -->
-<!-- ![Requisição no Postman](docs/print-postman.png) -->
-<!-- ![Testes passando](docs/print-testes.png) -->
-
----
 
 ## O que o projeto faz
 
@@ -190,10 +185,4 @@ curl -X POST http://localhost:8080/transactions/ai -F "file=@src/test/resources/
 
 Abra o `resposta.mp3` para ouvir a resposta. Grave também um áudio perguntando "quanto eu gastei no mercado?" para ver a nova ferramenta em ação.
 
-## O que aprendi
 
-<!-- Eduardo: escreva aqui com suas palavras -->
-
-## Créditos
-
-Projeto base: módulo `05-spring-ai` da trilha [dio-spring-boot-learning-track](https://github.com/digitalinnovationone/dio-spring-boot-learning-track), da [DIO](https://www.dio.me/). As melhorias, os testes e esta documentação foram adicionados por Eduardo Modolo.
